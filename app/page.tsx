@@ -261,8 +261,6 @@ export const Example2 = () => {
   const createSecondStream = () => {
     const updatedBlockStates = {...blockStates}
 
-    console.log("Create Second Stream : (first stream values)", updatedBlockStates.firstStream)
-
     // Check if the first stream has 1007
     if (updatedBlockStates.firstStream.includes(10007)) {
       updatedBlockStates.secondStream = [10007]
@@ -352,12 +350,253 @@ export const Example2 = () => {
         <div style={{ flex: 1}} />
       </div>
       <div className="description">
-        Thy soul is thine own ~ Don Quixote <br/> <br/>
+        <br/>
+        <b>Memory Usage:</b> FirstStream -- {blockStates.firstStream ? blockStates.firstStream.length : 0} SecondStream -- {blockStates.secondStream ? blockStates.secondStream.length : 0} <br/> <br/>
       </div>
     </div>
   );
 }
 
+export const Example3 = () => {
+
+  const [blockStates, setBlockStates] = useState({ firstStream: undefined, secondStream: undefined, thirdStream: undefined, finalValue: undefined })
+
+  function isPrime(num) {
+    if (num <= 1) return false; // Numbers less than or equal to 1 are not prime
+    if (num === 2) return true; // 2 is a prime number
+    if (num % 2 === 0) return false; // Even numbers other than 2 are not prime
+
+    for (let i = 3; i <= Math.sqrt(num); i += 2) {
+        if (num % i === 0) {
+            return false; // If divisible by any number, it's not prime
+        }
+    }
+    return true; // Otherwise, it's prime 
+  }
+
+  const forceThirdStream = (doNotUpdate = false, existingBS) => {
+    let updatedBlockStates = {...(existingBS ? existingBS : blockStates)}
+    updatedBlockStates = forceSecondStream(true, updatedBlockStates)
+    updatedBlockStates.thirdStream = updatedBlockStates.secondStream.slice(1)
+    if (doNotUpdate === true) return updatedBlockStates
+    setBlockStates(updatedBlockStates)
+  }
+
+  const createThirdStream = () => {
+    let updatedBlockStates = {firstStream: blockStates.firstStream, secondStream: blockStates.secondStream, thirdStream: undefined, finalValue: undefined}
+
+    // Second stream must be of length atleast one
+    while (updatedBlockStates.secondStream.length < 2)
+      updatedBlockStates = forceSecondStream(true, updatedBlockStates)
+
+    updatedBlockStates.thirdStream = updatedBlockStates.secondStream.slice(1)
+    setBlockStates(updatedBlockStates)
+    return
+  }
+
+  const forceSecondStream = (doNotUpdate = false, existingBS) => {
+    let updatedBlockStates = {...(existingBS ? existingBS : blockStates)}
+
+    // First stream have been forced before itself, see if existing forces revealed any prime
+    let lastPrime = updatedBlockStates.secondStream[updatedBlockStates.secondStream.length - 1]
+    let remainingList = updatedBlockStates.firstStream.filter(e => e > lastPrime)
+
+    // Some of the elements were already forced, no need to force anymore
+    for (const e of remainingList) {
+      if (isPrime(e)) {
+        // Push new prime to the second stream
+        updatedBlockStates.secondStream = [...updatedBlockStates.secondStream, e]
+        if (doNotUpdate === true) return updatedBlockStates
+        setBlockStates(updatedBlockStates)
+        return updatedBlockStates
+      }
+    }
+
+    let resPrime = 0
+    do {
+      updatedBlockStates = forceFirstStream(true, updatedBlockStates)
+      resPrime = updatedBlockStates.firstStream[updatedBlockStates.firstStream.length - 1]
+    } while(!isPrime(resPrime))
+
+    updatedBlockStates.secondStream = [...updatedBlockStates.secondStream, resPrime]
+    
+    if (doNotUpdate === true) return updatedBlockStates
+    setBlockStates(updatedBlockStates)
+  }
+
+  const createSecondStream = () => {
+    let updatedBlockStates = {firstStream: blockStates.firstStream, secondStream: undefined, thirdStream: undefined, finalValue: undefined}
+
+    // If the first stream does not have 10007, force it until it does
+    while (!updatedBlockStates.firstStream.includes(10007))
+      updatedBlockStates = forceFirstStream(true, updatedBlockStates)
+
+    updatedBlockStates.secondStream = [10007]
+    setBlockStates(updatedBlockStates)
+    return
+  }
+
+
+  const forceFirstStream = (doNotUpdate = false, existingBS) => {
+    const updatedBlockStates = {...(existingBS ? existingBS : blockStates)}
+    updatedBlockStates.firstStream = [...updatedBlockStates.firstStream, (updatedBlockStates.firstStream[updatedBlockStates.firstStream.length - 1] + 1)]
+    if (doNotUpdate === true) return updatedBlockStates
+    setBlockStates(updatedBlockStates)
+  }
+
+  const createFirstStream = () => {
+    const updatedBlockStates = {firstStream: undefined, secondStream: undefined, thirdStream: undefined, finalValue: undefined}
+    updatedBlockStates.firstStream = [10000]
+    setBlockStates(updatedBlockStates)
+  }
+
+  const createFinalValue = () => {
+    const updatedBlockStates = {...blockStates}
+    updatedBlockStates.finalValue = updatedBlockStates.thirdStream[0]
+    setBlockStates(updatedBlockStates)
+  }
+
+
+  return (
+    <div className="main-container">
+      <h1 className="title">Life is not a race, be lazy (;))</h1>
+      <div className="description">
+        Programs must be written for people to read, <br/> and only incidentally for machines to execute. ~ SICP
+      </div>
+      
+      <div className="vertically-stacked">
+        <div style={{ flex: 1}} />
+
+        {
+          blockStates.thirdStream && 
+          <div className="stream-container" style={{ justifyContent: "flex-end" }}>
+
+            {
+              blockStates.finalValue && 
+                <div
+                  className="stream-item">
+                  {blockStates.finalValue}
+                </div>
+            }
+            {
+              !blockStates.finalValue && 
+              <span className="arrow gray-arrow">
+              ?
+              </span>
+            }
+            <span className="arrow gray-arrow">
+              ←
+            </span>
+          </div>
+        }
+
+        {
+          blockStates.thirdStream && 
+          <div className="map-box" onClick={createFinalValue}>
+            car <br/><br/>
+            
+            λou know this too :)
+          </div>
+        }
+
+        {
+          blockStates.secondStream && 
+          <div className="stream-container" style={{ justifyContent: "flex-end" }}>
+            {
+              blockStates.thirdStream && 
+              <span className="arrow gray-arrow">
+                ←
+              </span>
+            }
+            {
+              blockStates.thirdStream && 
+              <StaticNumbersStream  backgroundColor="green" initial={blockStates.thirdStream} force={forceThirdStream}/>
+            }
+            {
+              !blockStates.thirdStream && 
+              <span className="arrow gray-arrow">
+              ?
+              </span>
+            }
+            {
+              blockStates.secondStream && 
+              <span className="arrow gray-arrow">
+                ←
+              </span>
+            }
+          </div>
+        }
+
+        
+        {
+          blockStates.secondStream && 
+          <div className="map-box" onClick={createThirdStream}>
+            cdr <br/><br/>
+            
+            λou know this 
+          </div>
+        }
+
+        <div className="stream-container" style={{ justifyContent: "flex-end" }}>
+          {
+            blockStates.secondStream && 
+            <span className="arrow gray-arrow">
+              ←
+            </span>
+          }
+          {
+            blockStates.secondStream && 
+            <StaticNumbersStream backgroundColor="green" initial={blockStates.secondStream} force={forceSecondStream}/>
+          }
+          {
+            !blockStates.secondStream && 
+            <span className="arrow gray-arrow">
+            ?
+            </span>
+          }
+          <span className="arrow gray-arrow">
+            ←
+          </span>
+        </div>
+        
+        {
+          blockStates.firstStream && 
+          <div className="map-box" onClick={createSecondStream}>
+            filter <br/><br/>
+            
+            (λ e) prime? e
+          </div>
+        }
+
+        {
+          blockStates.firstStream && 
+          <div className="stream-container">
+            <span className="arrow gray-arrow">
+            ←
+            </span>
+            <StaticNumbersStream backgroundColor="blue" initial={blockStates.firstStream} force={forceFirstStream}/>
+            <span className="arrow gray-arrow">
+            ←
+            </span>
+          </div>
+        }
+
+        <div className="map-box" onClick={createFirstStream}>
+          stream-enumerate-interval <br/><br/>
+          10000 1000000
+        </div>
+        <div style={{ flex: 1}} />
+      </div>
+      <div className="description">
+        <b>Memory Usage:</b> FirstStream -- {blockStates.firstStream ? blockStates.firstStream.length : 0} SecondStream -- {blockStates.secondStream ? blockStates.secondStream.length : 0} <br/>
+        <br/>
+          Notice how the output of cdr is not really a <b>new</b> strem
+        <br/>
+        <br/>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -365,6 +604,7 @@ export default function Home() {
       <LifeOfAStream/>
       <Example1/>
       <Example2/>
+      <Example3/>
     </>
   );
 }
