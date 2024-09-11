@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react";
 import React from "react";
 
-export const NumbersStream = (props: any) => {
+const NumbersStream = (props: any) => {
   const getNewState = props.getNewState ?? function (s: Array<any>) { return [...s, "i"] }
 
   const disabled = props.disabled ?? false
@@ -67,7 +67,7 @@ export const NumbersStream = (props: any) => {
   </>
 }
 
-export const StaticNumbersStream = (props: any) => {
+const StaticNumbersStream = (props: any) => {
   let streamState = props.initial
   const collapse = props.collapse ?? false
   let collapsed = 0
@@ -117,7 +117,7 @@ export const StaticNumbersStream = (props: any) => {
   </>
 }
 
-export const LifeOfAStream = () => {
+const LifeOfAStream = () => {
   return (
     <div className="main-container">
       <h1 className="title">Life of a Stream</h1>
@@ -128,7 +128,7 @@ export const LifeOfAStream = () => {
   );
 }
 
-export const Example1 = () => {
+const Example1 = () => {
 
   const [blockStates, setBlockStates] = useState({ firstStream: [1], secondStream: undefined })
 
@@ -209,7 +209,7 @@ export const Example1 = () => {
   );
 }
 
-export const Example2 = () => {
+const Example2 = () => {
 
   const [blockStates, setBlockStates] = useState({ firstStream: undefined, secondStream: undefined, thirdStream: undefined })
 
@@ -357,7 +357,7 @@ export const Example2 = () => {
   );
 }
 
-export const Example3 = () => {
+const Example3 = () => {
 
   const [blockStates, setBlockStates] = useState({ firstStream: undefined, secondStream: undefined, thirdStream: undefined, finalValue: undefined })
 
