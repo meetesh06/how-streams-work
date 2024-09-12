@@ -406,6 +406,7 @@ const Example3 = () => {
       if (isPrime(e)) {
         // Push new prime to the second stream
         updatedBlockStates.secondStream = [...updatedBlockStates.secondStream, e]
+        if (updatedBlockStates.thirdStream) updatedBlockStates.thirdStream = updatedBlockStates.secondStream.slice(1) // This was missing in your class demo ;p
         if (doNotUpdate === true) return updatedBlockStates
         setBlockStates(updatedBlockStates)
         return updatedBlockStates
@@ -419,6 +420,7 @@ const Example3 = () => {
     } while(!isPrime(resPrime))
 
     updatedBlockStates.secondStream = [...updatedBlockStates.secondStream, resPrime]
+    if (updatedBlockStates.thirdStream) updatedBlockStates.thirdStream = updatedBlockStates.secondStream.slice(1) // This was missing in your class demo ;p
     
     if (doNotUpdate === true) return updatedBlockStates
     setBlockStates(updatedBlockStates)
@@ -605,6 +607,10 @@ export default function Home() {
       <Example1/>
       <Example2/>
       <Example3/>
+
+      <div style={{ textAlign: "center", fontFamily: 'cursive', fontSize: 30, marginTop: 10, marginBottom: 10, backgroundColor: '#f0f0f0', padding: 20 }}>
+        Feel free to steal; <a href="https://github.com/meetesh06/how-streams-work">Source Code</a> ~ Author: <a href="https://meetesh06.github.io">mee</a>
+      </div>
     </>
   );
 }
