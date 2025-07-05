@@ -1,6 +1,8 @@
 # Interactive examples for Streams (SICP 3.5) 
 
-## The source code is very ugly, sorry. I was busy with other work.
+## The source code is very ugly, sorry. I was busy with other work. 
+
+Hosted Here: https://www.cse.iitb.ac.in/~manas/teaching/stream-anims/
 
 If you like it, fork it ;) 
 
